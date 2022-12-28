@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int arr_1[] = {8, 2, 2, 12, 7, 7, 8, 9, 10, 0, 15, 1, 14, 19, 35, 35, 48, 46, 48, 3};
+
+typedef struct{
+    int *ptr;
+    int size;
+}Array;
+
+void TaoMang(int arr1[], Array *arr2, Array *arr3, int n){
+    int i;
+    int sochan = 0, sole = 0;
+
+    for ( i = 0; i < n; i++)
+    {
+        if (arr1[i] % 2 == 0)
+        {
+            sochan++;
+        }else sole++;    
+    }
+
+    arr2->size = sochan;
+    arr3->size = sole;
+
+    arr2->ptr = (int *)malloc(arr2->size * sizeof(int));
+    arr3->ptr = (int *)malloc(arr3->size * sizeof(int));
+
+    int index = 0, index1 = 0;
+    for ( i = 0; i < n; i++)
+    {
+        if (arr1[i] % 2 == 0)
+        {
+            arr2->ptr[index] = arr1[i];
+            index++;
+        }else{
+            arr3->ptr[index1] = arr1[i];
+            index1++;
+        }   
+    }
+
+    printf("-------------------\n");
+    printf("Mang chan la: \n");
+    for ( i = 0; i < arr2->size; i++)
+    {
+        printf("arr[%d] = %d\n", i, arr2->ptr[i]); 
+    }
+
+    printf("-------------------\n");
+    printf("Mang le la: \n");
+    for ( i = 0; i < arr3->size; i++)
+    {
+        printf("arr[%d] = %d\n", i, arr3->ptr[i]); 
+    }
+
+    free(arr2->ptr);
+    free(arr3->ptr);
+    
+}
+int main(int argc, char const *argv[])
+{
+    int length = sizeof(arr_1)/sizeof(arr_1[0]);
+    printf("Kich thuoc cua mang la: %d\n", length);
+
+    Array arr_2, arr_3;
+
+    TaoMang(arr_1, &arr_2, &arr_3, length);
+    
+    return 0;
+}
