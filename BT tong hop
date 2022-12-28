@@ -1,0 +1,325 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+/*
+Cho 2 mang ngau nhien. Hay tinh:
++ Tao ra mang thu 3 voi kich thuoc = 1 + 2, va so phan tu la so phan tu cua mang1->mang2
++ Sap xep mang3 tang dan
++ Sap xem mang3 giam dan
++ Dem so lan xuat hien cua cac phan tu trong mang3
++ Tim phan tu co so lan xuat hien nhieu nhat trong mang3. In ra so lan, gia tri va vi tri cua phan tu do
++ Tim tong lon nhat cua 3 phan tu lien tiep
++ Tim tong be nhat cua 3 phan tu lien tiep
++ Tim so chan trong mang3
++ Tim so le trong mang3
++ Tao ra mang4 luu toan so le cua mang3
++ Tap ra mang5 luu toan so chan cua mang3
++ nhap/ xuat mang
+*/
+
+typedef struct
+{
+    int *ptr;
+    int size;
+} ARRAY;
+
+void CreatArr(ARRAY *value1, ARRAY *value2)
+{
+    // tao kich thuoc 5 - 10 phan tu
+    srand(time(NULL));
+    value1->size = 5 + rand() % 6;
+    value2->size = 5 + rand() % 6;
+    printf("Kich thuoc mang 1 la: %d\n", value1->size);
+    printf("Kich thuoc mang 2 la: %d\n", value2->size);
+
+    // cap phat bo nho
+    value1->ptr = (int *)malloc(value1->size * sizeof(int));
+    value2->ptr = (int *)malloc(value2->size * sizeof(int));
+
+    // gan gia tri mang1(0 - 7), mang 2(8 - 15)
+    int i;
+    for (i = 0; i < value1->size; i++)
+    {
+        value1->ptr[i] = rand() % 8;
+    }
+    for (i = 0; i < value2->size; i++)
+    {
+        value2->ptr[i] = 8 + rand() % 8;
+    }
+}
+
+void sapxeptang(ARRAY *value){
+    int i, j;
+    for ( i = 0; i < value->size -1; i++)
+    {
+        for ( j = i + 1; j < value->size; j++)
+        {
+            if (value->ptr[i] > value->ptr[j])
+            {
+                int temp = value->ptr[i];
+                value->ptr[i] = value->ptr[j];
+                value->ptr[j] = temp; 
+            }
+            
+        }
+        
+    }
+    
+}
+
+void displayArr(ARRAY *value)
+{
+    int i;
+    for (i = 0; i < value->size; i++)
+    {
+        printf("%d ", value->ptr[i]);
+    }
+    printf("\n");
+}
+
+void CreatArr3(ARRAY *value1, ARRAY *value2, ARRAY *value3)
+{
+    // tao kich thuoc mang 3 = mang1 + mang2
+    value3->size = value1->size + value2->size;
+    printf("Kich thuoc mang 3 la: %d\n", value3->size);
+
+    // cap phat bo nho cho mang3
+    value3->ptr = (int *)malloc(value3->size * sizeof(int));
+
+    // gan gia tri cho mang3 = gia tri mang1+mang2 (noi tiep)
+    int i, j;
+    for (i = 0; i < value1->size; i++)
+    {
+        value3->ptr[i] = value1->ptr[i];
+    }
+    for (i = 0; i < value2->size; i++)
+    {
+        value3->ptr[i + value1->size] = value2->ptr[i];
+    }
+}
+
+void sortAscending(ARRAY *value)
+{
+    int i, j, temp;
+    for (i = 0; i < value->size - 1; i++)
+    {
+        for (j = i + 1; j < value->size; j++)
+        {
+            if (value->ptr[i] > value->ptr[j])
+            {
+                temp = value->ptr[i];
+                value->ptr[i] = value->ptr[j];
+                value->ptr[j] = temp;
+            }
+        }
+    }
+}
+
+void sortDescending(ARRAY *value)
+{
+    int i, j, temp;
+    for (i = 0; i < value->size - 1; i++)
+    {
+        for (j = i + 1; j < value->size; j++)
+        {
+            if (value->ptr[i] < value->ptr[j])
+            {
+                temp = value->ptr[i];
+                value->ptr[i] = value->ptr[j];
+                value->ptr[j] = temp;
+            }
+        }
+    }
+}
+
+void Frequency(ARRAY *value)
+{
+    int count = 1;
+    int i;
+    for (i = 1; i < value->size; i++)
+    {
+        if (value->ptr[i] == value->ptr[i - 1])
+        {
+            count++;
+        }
+        else
+        {
+            printf("So %d co %d lan xuat hien!\n", value->ptr[i - 1], count);
+            count = 1;
+        }
+    }
+    printf("So %d co %d lan xuat hien!\n", value->ptr[value->size - 1], count);
+}
+
+void mostFrequency(ARRAY *value)
+{
+    int i, j;
+    int index = 0;
+    int max = 0;
+
+    for (i = 0; i < value->size - 1; i++)
+    {
+        int count = 1;
+        for (j = i + 1; j < value->size; j++)
+        {
+            if (value->ptr[i] == value->ptr[j])
+            {
+                count++;
+            }
+        }
+        if (max < count)
+        {
+            max = count;
+            index = i;
+        }
+    }
+
+    printf("So %d xuat hien nhieu nhat (%d lan) tai cac vi tri: ", value->ptr[index], max);
+    for (i = 0; i < value->size; i++)
+    {
+        if (value->ptr[i] == value->ptr[index])
+        {
+            printf("%d ", i);
+        }
+    }
+}
+
+void threeMaxAdjacentNum(ARRAY *value)
+{
+    int max = 0;
+    int index;
+    int i;
+    for (i = 0; i < value->size - 2; i++)
+    {
+        int sum = value->ptr[i] + value->ptr[i + 1] + value->ptr[i + 2];
+        if (max < sum)
+        {
+            max = sum;
+            index = i;
+        }
+    }
+    printf("\nTong 3 so lien ke lon nhat la: %d + %d + %d = %d", value->ptr[index], value->ptr[index + 1], value->ptr[index + 2], max);
+}
+
+void threeMinAdjacentNum(ARRAY *value)
+{
+    int min = value->ptr[0] + value->ptr[1] + value->ptr[2];
+    int index = 0;
+    int i;
+    for (i = 1; i < value->size - 2; i++)
+    {
+        int sum = value->ptr[i] + value->ptr[i + 1] + value->ptr[i + 2];
+        if (min > sum)
+        {
+            min = sum;
+            index = i;
+        }
+    }
+    printf("\nTong 3 so lien ke nho nhat la: %d + %d + %d = %d", value->ptr[index], value->ptr[index + 1], value->ptr[index + 2], min);
+}
+
+void findParityNum(ARRAY *value)
+{
+    int i;
+
+    printf("Cac so chan la: ");
+    for (i = 0; i < value->size; i++)
+    {
+        if (value->ptr[i] % 2 == 0)
+        {
+            printf("%d ", value->ptr[i]);
+        }
+    }
+    printf("\nCac so le la: ");
+    for (i = 0; i < value->size; i++)
+    {
+        if (value->ptr[i] % 2 != 0)
+        {
+            printf("%d ", value->ptr[i]);
+        }
+    }
+}
+
+void CreatArr4andArr5(ARRAY *value1, ARRAY *value2, ARRAY *value3)
+{
+    // tao kich thuoc cho mang4 tu cac so le cua mang3 & mang5 tu cac so chan cua mang3
+    int count1 = 0; // dem so le
+    int count2 = 0; // dem so chan
+    int i;
+    for (i = 0; i < value1->size; i++)
+    {
+        if (value1->ptr[i] % 2 != 0)
+        {
+            count1++;
+        }
+        else
+        {   
+            count2++;
+        }
+    }
+    value2->size = count1;
+    value3->size = count2;
+    printf("\nKich thuoc mang 4 la: %d", value2->size);
+    printf("\nKich thuoc mang 5 la: %d", value3->size);
+
+    // cap phat bo nho
+    value2->ptr = (int *)malloc(count1 * sizeof(int));
+    value3->ptr = (int *)malloc(value3->size * sizeof(int));
+
+    // gan gia tri
+    int index2 = 0;
+    int index3 = 0;
+    for (i = 0; i < value1->size; i++)
+    {
+        if (value1->ptr[i] % 2 != 0)
+        {
+            value2->ptr[index2] = value1->ptr[i];
+            index2++;
+        }else{
+            value3->ptr[index3] = value1->ptr[i];
+            index3++;
+        }
+    }
+}
+
+int main(int argc, char const *argv[])
+{
+    ARRAY arr1, arr2, arr3, arr4, arr5;
+
+    CreatArr(&arr1, &arr2);
+    // printf("Cac phan tu trong mang 1 la: ");
+    // displayArr(&arr1);
+    // printf("Cac phan tu trong mang 2 la: ");
+    // displayArr(&arr2);
+
+    CreatArr3(&arr1, &arr2, &arr3);
+    printf("Cac phan tu trong mang 3 la: ");
+    displayArr(&arr3);
+
+    // Frequency(&arr3);
+
+    // mostFrequency(&arr3);
+
+    // threeMaxAdjacentNum(&arr3);
+
+    // threeMinAdjacentNum(&arr3);
+
+    // findParityNum(&arr3);
+
+    CreatArr4andArr5(&arr3, &arr4, &arr5);
+    printf("\nCac phan tu trong mang 4 (le) la: ");
+    displayArr(&arr4);
+    printf("Cac phan tu trong mang 5 (chan) la: ");
+    displayArr(&arr5);
+
+    // sortAscending(&arr3);
+    // printf("\nMang 3 sau khi sap xep tang: ");
+    // displayArr(&arr3);
+
+    // sortDescending(&arr3);
+    // printf("Mang 3 sau khi sap xep giam: ");
+    // displayArr(&arr3);
+
+    return 0;
+}
