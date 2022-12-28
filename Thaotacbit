@@ -1,0 +1,51 @@
+#include <stdio.h>
+
+#define HIGH 1
+#define LOW 0
+
+int PORT = 0x00;
+
+void digitalWrite(int pin, int status)
+{
+  if (status == HIGH)
+  {
+    PORT |= 0x80 >> pin;
+  }
+  else
+  {
+    PORT &= ~(0x80 >> pin);
+  }
+}
+
+void DectoBin(int port)
+{
+  printf("0b");
+  int i;
+  for (i = 0; i < 8; i++)
+  {
+    if ((port & 0x80) == 0)
+    {
+      printf("0");
+    }
+    else
+      printf("1");
+    port = port << 1;
+  }
+  printf("\n");
+}
+
+int main(int argc, char const *argv[])
+{
+  DectoBin(PORT);
+  digitalWrite(7, HIGH);
+  DectoBin(PORT);
+
+  digitalWrite(6, HIGH);
+  digitalWrite(1, HIGH);
+  digitalWrite(2, HIGH);
+  digitalWrite(0, HIGH);
+
+  DectoBin(PORT);
+
+  return 0;
+}
